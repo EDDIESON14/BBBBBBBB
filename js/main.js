@@ -1,14 +1,19 @@
 // APP INIT
 // ===============================================
 const App = (() => {
-  function init() {
-    StorageModule.loadData();
-    AccountsModule.loadAccounts();
-    SettingsModule.loadSettings();
-    EmailModule.loadEmailConfig();
+  async function init() {
     setupEventListeners();
     setInitialDate();
-    // Restore login session after page refresh
+
+    // Step 1: Authenticate + load members/attendance/payments
+    await StorageModule.loadData();
+
+    // Step 2: Now that Firebase is authenticated, load accounts + settings
+    await AccountsModule.loadAccounts();
+    await SettingsModule.loadSettings();
+    EmailModule.loadEmailConfig();
+
+    // Step 3: Restore login session after page refresh
     if (AuthModule.restoreSession()) {
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
