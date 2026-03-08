@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShapeUp Gym - Client Display</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+body{font-family:Arial,sans-serif;padding:20px;text-align:center}
+
+/* Override to fill full screen */
+body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+#clientDisplay {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.gym-bg {
+  width: 100vw !important;
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important; left: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+  </style>
+</head>
+<body class="h-full">
+
+  <!-- Status bar top right -->
+  <div style="position:fixed;top:1rem;right:1.5rem;z-index:50;text-align:right;">
+    <p id="clientClock" style="color:rgba(255,255,255,0.8);font-family:monospace;font-size:1.4rem;font-weight:700;"></p>
+    <p id="clientDate" style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:2px;"></p>
+  </div>
+
+  <div class="gym-bg scanline-anim">
+    <div class="grid-bg"></div>
+
+    <!-- IDLE STATE -->
+    <div id="clientIdleState" class="flex flex-col items-center justify-center text-center">
+      <div style="margin-bottom:2rem;animation:float 3s ease-in-out infinite;">
+        <img src="logo/logo.png" alt="Gym Logo"
+             id="idleLogo"
+             style="width:180px;height:180px;object-fit:contain;filter:drop-shadow(0 0 30px rgba(255,255,255,0.25));"
+             onerror="this.style.display='none';document.getElementById('idleLogoFallback').style.display='block';">
+        <div id="idleLogoFallback" style="display:none;font-size:8rem;">🏋️</div>
+      </div>
+      <h1 class="client-idle-text text-6xl font-black tracking-tight mb-4">SCAN YOUR CODE</h1>
+      <p style="color:rgba(255,255,255,0.4);font-size:1rem;letter-spacing:0.3em;text-transform:uppercase;">Present your QR code or barcode to check in</p>
+      <div style="margin-top:2rem;display:flex;gap:0.75rem;justify-content:center;">
+        <div style="width:2rem;height:4px;background:rgba(250,204,21,0.8);border-radius:2px;animation:pulse 2s ease-in-out infinite;"></div>
+        <div style="width:2rem;height:4px;background:rgba(250,204,21,0.5);border-radius:2px;animation:pulse 2s ease-in-out 0.3s infinite;"></div>
+        <div style="width:2rem;height:4px;background:rgba(250,204,21,0.3);border-radius:2px;animation:pulse 2s ease-in-out 0.6s infinite;"></div>
+      </div>
+    </div>
+
+    <!-- MEMBER CARD -->
+    <div id="clientMemberCard" class="hidden w-full max-w-2xl mx-auto px-8">
+      <div id="memberCardInner" class="rounded-3xl border-2 p-8 relative overflow-hidden member-card-anim">
+
+        <div class="flex items-start gap-6 mb-6">
+          <!-- Photo ring -->
+          <div id="clientPhotoRing" class="client-photo-ring w-36 h-36 photo-reveal">
+            <img id="clientMemberPhoto" src="" alt="Member" class="hidden w-full h-full object-cover rounded-full">
+            <div id="clientMemberAvatarFallback" class="w-full h-full rounded-full flex items-center justify-center">
+              <span id="memberAvatarLetter" style="font-size:3.5rem;font-weight:900;color:rgba(255,255,255,0.9);"></span>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="flex-1 min-w-0">
+            <div id="clientActionBadge" class="inline-flex items-center px-4 py-1 mb-3">
+              <span id="clientActionText" class="text-sm font-black tracking-widest"></span>
+            </div>
+            <h2 id="clientMemberName" class="text-4xl font-black text-white leading-none mb-1"></h2>
+            <p id="clientMemberType" style="color:rgba(250,204,21,0.9);font-size:1rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;"></p>
+          </div>
+        </div>
+
+        <!-- Verified / No photo badge -->
+        <div id="clientVerifiedBadge" class="hidden mb-4 flex items-center gap-2" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);border-radius:0.75rem;padding:0.5rem 1rem;">
+          <span style="color:#10b981;font-size:0.85rem;font-weight:700;">✓ VERIFIED MEMBER</span>
+        </div>
+        <div id="clientNoPhotoBadge" class="hidden mb-4 flex items-center gap-2" style="background:rgba(107,114,128,0.15);border:1px solid rgba(107,114,128,0.4);border-radius:0.75rem;padding:0.5rem 1rem;">
+          <span style="color:#9ca3af;font-size:0.85rem;font-weight:700;">📷 NO PHOTO ON FILE</span>
+        </div>
+
+        <!-- Security note -->
+        <div id="clientSecurityNote" class="hidden mb-4" style="border:1px solid;border-radius:0.75rem;padding:0.75rem 1rem;">
+          <p id="clientSecurityText" style="font-size:0.8rem;color:rgba(255,255,255,0.7);"></p>
+        </div>
+
+        <!-- Details row -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div style="background:rgba(255,255,255,0.07);border-radius:1rem;padding:1rem;text-align:center;">
+            <p style="color:rgba(255,255,255,0.4);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Member ID</p>
+            <p id="clientMemberId" style="color:#fff;font-weight:700;font-size:0.9rem;font-family:monospace;"></p>
+          </div>
+          <div style="background:rgba(255,255,255,0.07);border-radius:1rem;padding:1rem;text-align:center;">
+            <p style="color:rgba(255,255,255,0.4);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Check Time</p>
+            <p id="clientCheckTime" style="color:#fff;font-weight:700;font-size:0.9rem;"></p>
+          </div>
+        </div>
+
+        <!-- Expiry -->
+        <div id="clientExpiryBox" style="background:rgba(255,255,255,0.1);border-radius:1rem;padding:1rem;text-align:center;margin-bottom:1rem;">
+          <p style="color:rgba(255,255,255,0.4);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Membership Expires</p>
+          <p id="clientExpiryDate" style="color:#fff;font-weight:700;font-size:1rem;"></p>
+          <p id="clientExpiryWarning" class="hidden" style="font-size:0.75rem;font-weight:700;margin-top:4px;"></p>
+        </div>
+
+        <!-- Warning banner -->
+        <div id="clientWarningBanner" class="hidden mb-4">
+          <p id="clientWarningText" style="font-size:0.85rem;font-weight:700;text-align:center;"></p>
+        </div>
+
+        <!-- Countdown -->
+        <div style="text-align:center;margin-top:0.5rem;">
+          <p style="color:rgba(255,255,255,0.3);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:4px;">Returning to idle in <span id="clientCountdown" class="countdown-tick" style="color:rgba(255,255,255,0.6);font-weight:700;">8</span>s</p>
+          <div style="width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+            <div id="clientCountdownBar" style="height:100%;background:rgba(250,204,21,0.7);border-radius:2px;transition:width 1s linear;width:100%;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+// =============================================
+// CLIENT DISPLAY - Standalone Window Script
+// =============================================
+
+let countdownTimer = null;
+let countdownVal = 8;
+let clockInterval = null;
+
+// Clock
+function startClock() {
+  function tick() {
+    const now = new Date();
+    const clock = document.getElementById('clientClock');
+    const dateEl = document.getElementById('clientDate');
+    if (clock) clock.textContent = now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    if (dateEl) dateEl.textContent = now.toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+  tick();
+  clockInterval = setInterval(tick, 1000);
+}
+
+function showIdle() {
+  document.getElementById('clientIdleState').classList.remove('hidden');
+  document.getElementById('clientMemberCard').classList.add('hidden');
+  if (countdownTimer) clearInterval(countdownTimer);
+}
+
+function getDaysUntilExpiry(expiryDate) {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const exp = new Date(expiryDate); exp.setHours(0,0,0,0);
+  return Math.ceil((exp - now) / (1000*60*60*24));
+}
+
+function showMemberCard(member, action) {
+  const daysLeft = getDaysUntilExpiry(member.expiryDate);
+  let borderColor, glowClass, bgStyle, actionBgColor;
+
+  if (action === 'checkout') {
+    borderColor = '#6b7280'; glowClass = '';
+    bgStyle = 'background: linear-gradient(135deg, #1f2937 0%, #111827 100%)';
+    actionBgColor = 'background: rgba(107,114,128,0.3)';
+  } else if (daysLeft <= 1) {
+    borderColor = '#ef4444'; glowClass = 'glow-red warning-pulse';
+    bgStyle = 'background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 100%)';
+    actionBgColor = 'background: rgba(16,185,129,0.3)';
+  } else if (daysLeft <= 3) {
+    borderColor = '#f59e0b'; glowClass = 'glow-yellow warning-pulse-yellow';
+    bgStyle = 'background: linear-gradient(135deg, #1a1200 0%, #2d1f00 100%)';
+    actionBgColor = 'background: rgba(16,185,129,0.3)';
+  } else {
+    borderColor = '#facc15'; glowClass = 'glow-green';
+    bgStyle = 'background: linear-gradient(135deg, #0a1a00 0%, #111a05 100%)';
+    actionBgColor = 'background: rgba(16,185,129,0.3)';
+  }
+
+  const card = document.getElementById('memberCardInner');
+  card.className = `rounded-3xl border-2 p-8 relative overflow-hidden member-card-anim ${glowClass}`;
+  card.style.cssText = `border-color: ${borderColor}; ${bgStyle}`;
+
+  const photoEl = document.getElementById('clientMemberPhoto');
+  const avatarFallback = document.getElementById('clientMemberAvatarFallback');
+  const photoRing = document.getElementById('clientPhotoRing');
+  const verifiedBadge = document.getElementById('clientVerifiedBadge');
+  const noPhotoBadge = document.getElementById('clientNoPhotoBadge');
+  const securityNote = document.getElementById('clientSecurityNote');
+  const securityText = document.getElementById('clientSecurityText');
+
+  photoRing.className = 'client-photo-ring w-36 h-36 photo-reveal';
+
+  if (member.profilePhoto) {
+    photoEl.src = member.profilePhoto;
+    photoEl.classList.remove('hidden');
+    avatarFallback.classList.add('hidden');
+    verifiedBadge.classList.remove('hidden');
+    noPhotoBadge.classList.add('hidden');
+    if (daysLeft <= 1) photoRing.classList.add('ring-red');
+    else if (daysLeft <= 3) photoRing.classList.add('ring-yellow');
+    securityNote.classList.remove('hidden');
+    securityText.innerHTML = '🔒 <strong>Staff:</strong> Verify that the face on screen matches the person presenting their card.';
+    securityNote.style.borderColor = borderColor + '55';
+  } else {
+    photoEl.classList.add('hidden');
+    avatarFallback.classList.remove('hidden');
+    document.getElementById('memberAvatarLetter').textContent = member.name.charAt(0).toUpperCase();
+    avatarFallback.style.background = borderColor + '33';
+    verifiedBadge.classList.add('hidden');
+    noPhotoBadge.classList.remove('hidden');
+    securityNote.classList.remove('hidden');
+    securityText.innerHTML = '⚠️ <strong>Staff:</strong> No profile photo on file. Please ask member for valid ID.';
+    securityNote.style.borderColor = '#f59e0b55';
+  }
+
+  document.getElementById('clientMemberName').textContent = member.name;
+  document.getElementById('clientMemberType').textContent = member.membershipType;
+
+  const badge = document.getElementById('clientActionBadge');
+  badge.style.cssText = `${actionBgColor}; border: 2px solid ${action === 'checkout' ? '#6b7280' : '#10b981'}; border-radius: 1rem;`;
+  const actionText = document.getElementById('clientActionText');
+  if (action === 'checkin') { actionText.textContent = '✓ CHECK IN'; actionText.style.color = '#10b981'; }
+  else { actionText.textContent = '← CHECK OUT'; actionText.style.color = '#9ca3af'; }
+
+  const code = member.qrCode || member.id;
+  document.getElementById('clientMemberId').textContent = code.substring(0, 15);
+  document.getElementById('clientCheckTime').textContent = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+
+  const expiryBox = document.getElementById('clientExpiryBox');
+  const expiryDate = document.getElementById('clientExpiryDate');
+  const expiryWarning = document.getElementById('clientExpiryWarning');
+  const warningBanner = document.getElementById('clientWarningBanner');
+  const warningText = document.getElementById('clientWarningText');
+
+  expiryDate.textContent = member.expiryDate;
+
+  if (daysLeft <= 0) {
+    expiryBox.style.cssText = 'background:rgba(239,68,68,0.2);border:1px solid #ef444466;border-radius:1rem;padding:1rem;text-align:center;';
+    expiryDate.style.color = '#fca5a5';
+    expiryWarning.textContent = daysLeft === 0 ? '⚠️ EXPIRES TODAY' : '❌ EXPIRED';
+    expiryWarning.style.color = '#ef4444'; expiryWarning.classList.remove('hidden');
+    warningBanner.style.cssText = 'background:rgba(239,68,68,0.2);border:2px solid #ef4444;border-radius:1rem;padding:1rem;text-align:center;';
+    warningText.style.color = '#ef4444';
+    warningText.textContent = daysLeft === 0 ? '⚠️ Your membership expires TODAY! Please renew.' : '❌ Membership expired. Please renew at the front desk.';
+    warningBanner.classList.remove('hidden');
+  } else if (daysLeft === 1) {
+    expiryBox.style.cssText = 'background:rgba(239,68,68,0.15);border:1px solid #ef444455;border-radius:1rem;padding:1rem;text-align:center;';
+    expiryDate.style.color = '#fca5a5';
+    expiryWarning.textContent = '🔴 EXPIRES TOMORROW!'; expiryWarning.style.color = '#ef4444'; expiryWarning.classList.remove('hidden');
+    warningBanner.style.cssText = 'background:rgba(239,68,68,0.15);border:2px solid #ef4444;border-radius:1rem;padding:1rem;text-align:center;';
+    warningText.style.color = '#ef4444';
+    warningText.textContent = '🔴 Your membership expires TOMORROW! Renew now.';
+    warningBanner.classList.remove('hidden');
+  } else if (daysLeft <= 3) {
+    expiryBox.style.cssText = 'background:rgba(245,158,11,0.15);border:1px solid #f59e0b55;border-radius:1rem;padding:1rem;text-align:center;';
+    expiryDate.style.color = '#fcd34d';
+    expiryWarning.textContent = `🟡 ${daysLeft} DAYS LEFT`; expiryWarning.style.color = '#f59e0b'; expiryWarning.classList.remove('hidden');
+    warningBanner.style.cssText = 'background:rgba(245,158,11,0.1);border:2px solid #f59e0b;border-radius:1rem;padding:1rem;text-align:center;';
+    warningText.style.color = '#f59e0b';
+    warningText.textContent = `🟡 Your membership expires in ${daysLeft} days. Please renew soon.`;
+    warningBanner.classList.remove('hidden');
+  } else {
+    expiryBox.style.cssText = 'background:rgba(255,255,255,0.1);border-radius:1rem;padding:1rem;text-align:center;';
+    expiryDate.style.color = '#fff';
+    expiryWarning.classList.add('hidden');
+    warningBanner.classList.add('hidden');
+  }
+
+  document.getElementById('clientIdleState').classList.add('hidden');
+  document.getElementById('clientMemberCard').classList.remove('hidden');
+  startCountdown();
+}
+
+function startCountdown() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownVal = 8;
+  const countEl = document.getElementById('clientCountdown');
+  const barEl = document.getElementById('clientCountdownBar');
+  function tick() {
+    countdownVal--;
+    if (countEl) { countEl.textContent = countdownVal; countEl.classList.add('tick'); setTimeout(() => countEl.classList.remove('tick'), 300); }
+    if (barEl) barEl.style.width = `${(countdownVal / 8) * 100}%`;
+    if (countdownVal <= 0) { clearInterval(countdownTimer); showIdle(); }
+  }
+  if (countEl) countEl.textContent = countdownVal;
+  if (barEl) barEl.style.width = '100%';
+  countdownTimer = setInterval(tick, 1000);
+}
+
+// =============================================
+// BroadcastChannel - receives data from main app
+// =============================================
+const channel = new BroadcastChannel('shapeup_client_display');
+channel.onmessage = (event) => {
+  const { type, member, action } = event.data;
+  if (type === 'show_member') {
+    showMemberCard(member, action);
+  } else if (type === 'show_idle') {
+    showIdle();
+  }
+};
+
+// Start clock on load
+startClock();
+showIdle();
+  </script>
+</body>
+</html>

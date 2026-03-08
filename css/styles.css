@@ -1,0 +1,243 @@
+/* =============================================
+   ShapeUp Gym - Color Theme
+   Header: Gray | Sidebar: Silver
+   Buttons: Emerald Green | Cards: White
+   Main bg: Light Gray | Nav Active: Gray
+   ============================================= */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f3f4f6;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Header ───────────────────────────────── */
+header {
+  background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%) !important;
+}
+
+/* ── Sidebar ──────────────────────────────── */
+nav {
+  background: #C0C0C0 !important;
+  border-right: 1px solid #a8a8a8;
+}
+
+nav .nav-tab {
+  color: #4b5563 !important;
+  transition: all 0.2s;
+}
+
+nav .nav-tab:hover {
+  background: #a8a8a8 !important;
+  color: #1f2937 !important;
+}
+
+/* ── Main content ─────────────────────────── */
+main {
+  background: #f3f4f6 !important;
+}
+
+/* ── Cards ────────────────────────────────── */
+.stat-card {
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* ── Buttons: Emerald Green ───────────────── */
+button.btn-primary,
+button[class*="bg-emerald"] {
+  transition: all 0.2s;
+}
+
+button[class*="bg-emerald-500"]:hover,
+button[class*="hover:bg-emerald"] {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+/* ── Inputs focus ─────────────────────────── */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* ── Modal ────────────────────────────────── */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+
+.modal.active { display: flex; }
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  border-top: 4px solid #9ca3af;
+}
+
+/* ── Toast ────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 14px 24px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+/* ── Tab content ──────────────────────────── */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── Notification ─────────────────────────── */
+.notif-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: #ef4444;
+  color: white;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.notif-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  z-index: 500;
+  border: 1px solid #e5e7eb;
+  border-top: 3px solid #9ca3af;
+}
+
+.notif-dropdown.active { display: block; }
+
+/* ── Profile photo upload ─────────────────── */
+.profile-photo-upload {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: 2px dashed #C0C0C0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+  background: #f9fafb;
+  flex-shrink: 0;
+}
+
+.profile-photo-upload:hover {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.profile-photo-upload img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+/* Hide the native file input completely */
+.profile-photo-upload input[type="file"] {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Photo wall ───────────────────────────── */
+.photo-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.photo-item:hover img { transform: scale(1.05); }
+
+/* ── Login page ───────────────────────────── */
+#loginPage {
+  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 50%, #d1d5db 100%);
+}
+
+#loginPage .bg-white {
+  border-top: 4px solid #9ca3af;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+/* ── Scrollbar ────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #C0C0C0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ── Calendar ─────────────────────────────── */
+#expiryCalendar .grid > div { transition: all 0.15s; }
+
+/* ── Notification dropdown show ───────────── */
+.notif-dropdown.show { display: block; }
+
+/* ── Notification item colors ─────────────── */
+.notif-item-red    { background: #fff5f5; }
+.notif-item-yellow { background: #fffbeb; }
+
+/* ── Pulse ring animation ─────────────────── */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.pulse-ring { animation: pulse-ring 1.5s infinite; }
+
+/* ── Slide in animation ───────────────────── */
+@keyframes slideInLeft {
+  from { transform: translateX(-10px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+.slide-in-left { animation: slideInLeft 0.2s ease; }
