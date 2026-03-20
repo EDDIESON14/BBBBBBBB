@@ -21,7 +21,7 @@
 <div id="app" class="h-full w-full overflow-auto">
 
   <!-- Login Page -->
-  <div id="loginPage" class="flex items-center justify-center" style="height: 100%; background: linear-gradient(135deg, #1a412a 0%, #000000 100%);">
+  <div id="loginPage" class="flex items-center justify-center" style="height: 100%; background: linear-gradient(135deg, #000000 0%, #000000 100%);">
     <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
       <div class="text-center mb-8">
         <!-- LOGIN LOGO: logo/logo.png with your actual logo file -->
@@ -53,7 +53,7 @@
           <button type="button" onclick="ForgotPasswordModule.openModal()" class="text-sm text-emerald-600 hover:text-gray-700 font-medium hover:underline transition">Forgot Password?</button>
         </div>
       </form>
-      
+       
     </div>
   </div>
 
@@ -78,7 +78,7 @@
           </div>
           <div class="flex items-center space-x-3">
             <!-- Client Monitor Button -->
-            <button id="clientMonitorBtn" id="clientDisplayBtn" onclick="ClientMonitor.openMonitor()" class="bg-black hover:bg-gray-800 text-gray-600 px-4 py-2 rounded-lg font-medium transition flex items-center space-x-2 text-sm">
+            <button id="clientMonitorBtn" id="clientDisplayBtn" onclick="ClientMonitor.openMonitor()" class="bg-white/20 hover:bg-gray-600 text-white border border-white/30 px-4 py-2 rounded-lg font-medium transition flex items-center space-x-2 text-sm">
               <span></span><span>Client Display</span>
             </button>
 
@@ -92,8 +92,8 @@
               </button>
               <!-- Notification Dropdown -->
               <div id="notifDropdown" class="notif-dropdown">
-                <div class="bg-gray-900 text-white px-4 py-3 flex justify-between items-center">
-                  <span class="font-bold text-sm">🔔 Membership Alerts</span>
+                <div class="bg-white/20 text-white px-4 py-3 flex justify-between items-center">
+                  <span class="font-bold text-sm">Membership Alerts</span>
                   <button onclick="NotifModule.markAllRead()" class="text-gray-600 text-xs hover:underline">Mark all read</button>
                 </div>
                 <div id="notifList" class="max-h-80 overflow-y-auto">
@@ -105,7 +105,7 @@
               </div>
             </div>
 
-            <button id="logoutButton" class="bg-white/20 hover:bg-white/30 text-white border border-white/30 px-6 py-2 rounded-lg font-medium transition">Logout</button>
+            <button id="logoutButton" class="bg-white/20 hover:bg-gray-600 text-white border border-white/30 px-6 py-2 rounded-lg font-medium transition">Logout</button>
           </div>
         </div>
       </div>
