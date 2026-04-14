@@ -83,7 +83,7 @@ const HomeModule = (() => {
 
     const badge = document.getElementById('homeOpenBadge');
     if (badge) {
-      badge.textContent = isOpen ? '🟢 OPEN' : '🔴 CLOSED';
+      badge.textContent = isOpen ? ' 🟢OPEN' : ' 🔴CLOSED';
       badge.className   = `text-sm font-bold px-3 py-1 rounded-full ${isOpen ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`;
     }
 
